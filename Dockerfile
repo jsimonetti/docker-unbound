@@ -1,8 +1,12 @@
 FROM jsimonetti/alpine-edge
 
-RUN	apk add --no-cache unbound && \
-	sed -i -e '/verbosity: 1/a     interface: 0.0.0.0' /etc/unbound/unbound.conf && \
-	sed -i -e '/verbosity: 1/a     access-control: 0.0.0.0/0 allow' /etc/unbound/unbound.conf
+RUN apk add --update --no-cache unbound ca-certificates openssl bash  \
+  && unbound-anchor -a /etc/unbound/root.key ; true \
+  && unbound-control-setup \
+  && wget ftp://FTP.INTERNIC.NET/domain/named.cache -O /etc/unbound/root.hints \
+  && apk del openssl \
+  && rm -rf /var/cache/apk/* ;
 
-CMD	[ "unbound", "-d" ]
+COPY unbound.conf /etc/unbound/unbound.conf
 
+ENTRYPOINT ["tini", "--", "/usr/sbin/unbound", "-d"]
