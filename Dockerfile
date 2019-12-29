@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-RUN apk add --update --no-cache unbound ca-certificates openssl bash  \
+RUN apk add --update --no-cache tini unbound ca-certificates openssl bash  \
   && unbound-anchor -a /etc/unbound/root.key ; true \
   && unbound-control-setup \
   && wget ftp://FTP.INTERNIC.NET/domain/named.cache -O /etc/unbound/root.hints \
