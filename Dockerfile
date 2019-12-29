@@ -1,4 +1,4 @@
-FROM jsimonetti/alpine-edge
+FROM alpine:latest
 
 RUN apk add --update --no-cache unbound ca-certificates openssl bash  \
   && unbound-anchor -a /etc/unbound/root.key ; true \
